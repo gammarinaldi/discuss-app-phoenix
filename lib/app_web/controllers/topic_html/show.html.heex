@@ -1,0 +1,32 @@
+<.header>
+  Topic <%= @topic.id %>: <%= @topic.title %>
+  <:subtitle>This is a topic record from your database.</:subtitle>
+  <:actions>
+    <%= if(@conn.assigns.user != nil and @conn.assigns.user.id == @topic.user_id) do %>
+      <.link href={~p"/#{@topic}/edit"}>
+        <.button>Edit topic</.button>
+      </.link>
+    <% end %>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="">
+    <%= if(@conn.assigns.user != nil) do %>
+      <textarea id="comment-content"></textarea><br />
+      <.button id="comment-btn">Add comment</.button>
+    <% else %>
+      <.link navigate={~p"/auth/github"}><i>Sign in to comment</i></.link>
+    <% end %>
+  </:item>
+  <:item title="Comments"><ul class="collection"></ul></:item>
+</.list>
+
+<.back navigate={~p"/"}>Back to topics</.back>
+
+<script>
+  // Create socket after all content loaded
+  document.addEventListener("DOMContentLoaded", function() {
+    window.createSocket(<%= @topic.id %>)
+  })
+</script>
